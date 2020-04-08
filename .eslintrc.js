@@ -8,6 +8,7 @@ module.exports = {
     browser: true,
     node: true,
     es6: true,
+    jquery: true
   },
   extends: ['plugin:vue/recommended', 'eslint:recommended'],
 
@@ -22,11 +23,11 @@ module.exports = {
       }
     }],
     "vue/singleline-html-element-content-newline": "off",
-    "vue/multiline-html-element-content-newline":"off",
-    "vue/name-property-casing": ["error", "PascalCase"],
+    "vue/multiline-html-element-content-newline": "off",
+    "vue/name-property-casing": ["error", "PascalCase"], // 在Vue组件中为name属性强制执行特定的大小写
     "vue/no-v-html": "off",
     'accessor-pairs': 2,
-    'arrow-spacing': [2, {
+    'arrow-spacing': [2, { // 在箭头功能的箭头之前/之后需要空格（箭头间距）
       'before': true,
       'after': true
     }],
@@ -47,7 +48,9 @@ module.exports = {
     'curly': [2, 'multi-line'],
     'dot-location': [2, 'property'],
     'eol-last': 2,
-    'eqeqeq': ["error", "always", {"null": "ignore"}],
+    'eqeqeq': ["error", "always", {
+      "null": "ignore"
+    }],
     'generator-star-spacing': [2, {
       'before': true,
       'after': true
@@ -194,5 +197,12 @@ module.exports = {
       objectsInObjects: false
     }],
     'array-bracket-spacing': [2, 'never']
-  }
+  },
+  // globals: {
+  //   'axios': true,
+  //   'appcan': true,
+  //   'Vue': true,
+  //   'VueRouter': true,
+  //   'echarts': true
+  // }
 }

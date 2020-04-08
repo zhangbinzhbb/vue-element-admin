@@ -1,62 +1,48 @@
-import { asyncRoutes, constantRoutes } from '@/router'
+import { constantRoutes, routerMap } from '@/router'
+import { mockData } from '../../../mock/yh/index'
 
-/**
- * Use meta.role to determine if the current user has permission
- * @param roles
- * @param route
- */
-function hasPermission(roles, route) {
-  if (route.meta && route.meta.roles) {
-    return roles.some(role => route.meta.roles.includes(role))
-  } else {
-    return true
-  }
-}
-
-/**
- * Filter asynchronous routing tables by recursion
- * @param routes asyncRoutes
- * @param roles
- */
-export function filterAsyncRoutes(routes, roles) {
-  const res = []
-
-  routes.forEach(route => {
-    const tmp = { ...route }
-    if (hasPermission(roles, tmp)) {
-      if (tmp.children) {
-        tmp.children = filterAsyncRoutes(tmp.children, roles)
-      }
-      res.push(tmp)
+// 将本地routerMap映射到ajax获取到的serverRouterMap;
+function generateAsyncRouter(routerMap, serverRouterMap) {
+  serverRouterMap.forEach((item, index) => {
+    item.component = routerMap[item.component]
+    if (item.children && item.children.length > 0) {
+      generateAsyncRouter(routerMap, item.children)
     }
   })
-
-  return res
+  return serverRouterMap
 }
 
 const state = {
   routes: [],
-  addRoutes: []
+  addRoutes: [],
+  routerLength: 0
 }
 
 const mutations = {
   SET_ROUTES: (state, routes) => {
     state.addRoutes = routes
     state.routes = constantRoutes.concat(routes)
+  },
+  ROUTER_LEN: (state, len) => {
+    state.routerLength = len
   }
 }
 
 const actions = {
-  generateRoutes({ commit }, roles) {
+  generateRoutes({
+    commit
+  }, roles) {
     return new Promise(resolve => {
-      let accessedRoutes
-      if (roles.includes('admin')) {
-        accessedRoutes = asyncRoutes || []
-      } else {
-        accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
-      }
-      commit('SET_ROUTES', accessedRoutes)
-      resolve(accessedRoutes)
+      // actions中GenerateRoutes方法合适的地方将后端请求的路由表映射到routerMap,
+      // 并筛选出可访问的路由,serverRouterMap是我定义的从后台请求路由表的方法
+      setTimeout(() => {
+        const serverRouterMap = mockData.data.funcPermissions // 模拟数据
+        console.log('serverRouterMap:', serverRouterMap)
+        const asyncRouterMap = generateAsyncRouter(routerMap, serverRouterMap)
+        commit('ROUTER_LEN', asyncRouterMap.length)
+        commit('SET_ROUTES', asyncRouterMap)
+        resolve(asyncRouterMap)
+      }, 1000)
     })
   }
 }

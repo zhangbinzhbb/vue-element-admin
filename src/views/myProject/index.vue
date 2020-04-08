@@ -1,6 +1,5 @@
-
 <template>
   <div>
-    欢迎！！！
+    myProject
   </div>
 </template>
