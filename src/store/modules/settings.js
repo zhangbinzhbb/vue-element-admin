@@ -1,9 +1,16 @@
 import variables from '@/styles/element-variables.scss'
 import defaultSettings from '@/settings'
 
-const { showSettings, tagsView, fixedHeader, sidebarLogo } = defaultSettings
+const {
+  projectName,
+  showSettings,
+  tagsView,
+  fixedHeader,
+  sidebarLogo
+} = defaultSettings
 
 const state = {
+  projectName: projectName,
   theme: variables.theme,
   showSettings: showSettings,
   tagsView: tagsView,

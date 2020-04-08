@@ -1,21 +1,21 @@
 <template>
   <div :class="classObj" class="app-wrapper">
+    <Header class="header-fixed" />
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
     <sidebar class="sidebar-container" />
+    <div :class="{'fixed-header':true}">
+      <tags-view v-if="needTagsView" />
+      <navbar />
+    </div>
     <div :class="{hasTagsView:needTagsView}" class="main-container">
-      <div :class="{'fixed-header':fixedHeader}">
-        <navbar />
-        <tags-view v-if="needTagsView" />
-      </div>
       <app-main />
-
     </div>
   </div>
 </template>
 
 <script>
 
-import { AppMain, Navbar, Sidebar, TagsView } from './components'
+import { AppMain, Navbar, Sidebar, TagsView, Header } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import { mapState } from 'vuex'
 
@@ -25,16 +25,15 @@ export default {
     AppMain,
     Navbar,
     Sidebar,
-    TagsView
+    TagsView,
+    Header
   },
   mixins: [ResizeMixin],
   computed: {
     ...mapState({
       sidebar: state => state.app.sidebar,
       device: state => state.app.device,
-      showSettings: state => state.settings.showSettings,
-      needTagsView: state => state.settings.tagsView,
-      fixedHeader: state => state.settings.fixedHeader
+      needTagsView: state => state.settings.tagsView
     }),
     classObj() {
       return {
@@ -68,6 +67,14 @@ export default {
       top: 0;
     }
   }
+  .header-fixed{
+    position: fixed;
+    top: 0;
+    z-index: 10;
+  }
+  .sidebar-container{
+    margin-top: 49px;
+  }
 
   .drawer-bg {
     background: #000;
@@ -81,13 +88,19 @@ export default {
 
   .fixed-header {
     position: fixed;
-    top: 0;
+    top:49px;
     right: 0;
     z-index: 9;
     width: calc(100% - #{$sideBarWidth});
     transition: width 0.28s;
+    box-shadow:0px 4px 3px #ccc;
   }
-
+  .navbar{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 40px;
+  }
   .hideSidebar .fixed-header {
     width: calc(100% - 54px)
   }

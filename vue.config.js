@@ -24,7 +24,9 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: '/',
+  publicPath: process.env.NODE_ENV === 'production'
+    ? './'
+    : '/',
   outputDir: 'dist',
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
@@ -33,7 +35,7 @@ module.exports = {
     port: port,
     open: true,
     overlay: {
-      warnings: false,
+      warnings: true,
       errors: true
     },
     before: require('./mock/mock-server.js')
@@ -46,11 +48,35 @@ module.exports = {
       alias: {
         '@': resolve('src')
       }
+    },
+    // 添加 externals 让 webpack 不打包 vue 和 element等第三方资源
+    externals: {
+      // vue: 'Vue'
+      // 'element-ui': 'ELEMENT'
     }
   },
   chainWebpack(config) {
     config.plugins.delete('preload') // TODO: need test
     config.plugins.delete('prefetch') // TODO: need test
+
+    // CDN 通过 html-webpack-plugin注入到 index.html之中
+    const cdn = {
+      css: [
+        // element-ui css
+        // 'https://cdn.jsdelivr.net/npm/element-ui@2.13.0/lib/theme-chalk/index.min.css'
+      ],
+      js: [
+        // vue must at first!
+        // 'https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js'
+        // element-ui js
+        // 'https://cdn.jsdelivr.net/npm/element-ui@2.13.0/lib/index.min.js'
+      ]
+    }
+    config.plugin('html')
+      .tap(args => {
+        args[0].cdn = cdn
+        return args
+      })
 
     // set svg-sprite-loader
     config.module
@@ -93,7 +119,7 @@ module.exports = {
             .plugin('ScriptExtHtmlWebpackPlugin')
             .after('html')
             .use('script-ext-html-webpack-plugin', [{
-            // `runtime` must same as runtimeChunk name. default is `runtime`
+              // `runtime` must same as runtimeChunk name. default is `runtime`
               inline: /runtime\..*\.js$/
             }])
             .end()

@@ -1,6 +1,6 @@
 module.exports = {
   title: 'Vue Element Admin',
-
+  projectName: '项目管理',
   /**
    * @type {boolean} true | false
    * @description Whether show the settings right-panel

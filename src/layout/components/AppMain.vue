@@ -16,7 +16,7 @@ export default {
       return this.$store.state.tagsView.cachedViews
     },
     key() {
-      return this.$route.path
+      return this.$route.fullPath
     }
   }
 }
@@ -29,10 +29,13 @@ export default {
   width: 100%;
   position: relative;
   overflow: hidden;
+  margin-top: 98px;
+  padding: 0 14px;
+  box-sizing: border-box;
 }
 
 .fixed-header+.app-main {
-  padding-top: 50px;
+  padding-top: 54px;
 }
 
 .hasTagsView {
@@ -42,7 +45,7 @@ export default {
   }
 
   .fixed-header+.app-main {
-    padding-top: 84px;
+    padding-top:54px;
   }
 }
 </style>

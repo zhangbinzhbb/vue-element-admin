@@ -76,6 +76,19 @@ export const constantRoutes = [
         meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
       }
     ]
+  },
+  {
+    path: '/form',
+    component: Layout,
+    children: [{
+      path: 'formView',
+      component: () => import('@/views/formView/index'),
+      name: 'formView',
+      meta: {
+        title: 'formView',
+        icon: 'dashboard'
+      }
+    }]
   }
 ]
 
